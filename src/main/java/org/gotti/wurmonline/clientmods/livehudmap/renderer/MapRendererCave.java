@@ -6,7 +6,6 @@ import java.util.Random;
 
 import com.wurmonline.client.game.CaveDataBuffer;
 import com.wurmonline.client.renderer.PickData;
-import com.wurmonline.client.renderer.gui.LiveMapWindow;
 import com.wurmonline.mesh.Tiles.Tile;
 import org.gotti.wurmonline.clientmods.livehudmap.LiveHudMapMod;
 

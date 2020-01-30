@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 import org.gotti.wurmonline.clientmods.livehudmap.LiveMap;
 import org.gotti.wurmonline.clientmods.livehudmap.MapLayer;
 import org.gotti.wurmonline.clientmods.livehudmap.renderer.RenderType;
@@ -28,6 +29,7 @@ public class LiveMapWindow extends WWindow {
 	private LiveMap liveMap;
 	private BufferedImage iconImage;
 	private LiveMapView liveMapView;
+	public static String mServerButtonText;
 
 	public LiveMapWindow(World world) {
 		super("Live map", true);
@@ -100,6 +102,45 @@ public class LiveMapWindow extends WWindow {
 				liveMap.setRenderer(MapLayer.SURFACE, RenderType.TOPOGRAPHIC);
 			}
 		}));
+		
+		buttons.addComponent(createButton( "Deeds", "Toggle Deeds" , 5, new ButtonListener() 
+		{
+
+			@Override
+			public void buttonPressed( WButton p0 ) 
+			{
+			}
+
+			@Override
+			public void buttonClicked( WButton p0 ) 
+			{
+				DeedData.mShowDeeds = !DeedData.mShowDeeds;
+			}
+		} ) );
+		
+//		buttons.addComponent(createButton( mServerButtonText, "Change Server (Lib/Nov)" , 6, new ButtonListener() 
+//		{
+//
+//			@Override
+//			public void buttonPressed( WButton p0 ) 
+//			{
+//			}
+//
+//			@Override
+//			public void buttonClicked( WButton p0 ) 
+//			{
+//				if ( mServerButtonText.contains( "LIB" ) )
+//				{
+//					mServerButtonText = "NOV";
+//					LiveHudMapMod.mCurrentJsonPath = LiveHudMapMod.mJsonNovPath;
+//				}
+//				else if ( mServerButtonText.contains( "NOV" ) )
+//				{
+//					mServerButtonText = "LIB";
+//					LiveHudMapMod.mCurrentJsonPath = LiveHudMapMod.mJsonLibPath;
+//				}
+//			}
+//		} ) );
 
 
 

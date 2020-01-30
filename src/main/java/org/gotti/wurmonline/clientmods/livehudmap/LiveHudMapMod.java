@@ -33,21 +33,38 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 	
 	private boolean hiResMap = false;
 	private boolean showHiddenOre = false;
+	private boolean mShowDeeds = true;
+	
+	public String mMapName = "";
 	
 	private Object liveMap;
+	
+	private DeedData mDeedData = new DeedData();
 
 	public static int serverSize = 0;
+	
+	public static String mJsonLibPath = "";
+	public static String mJsonNovPath = "";
+	public static String mCurrentJsonPath = "";
 
 	@Override
 	public void configure(Properties properties) {
 		hiResMap = Boolean.valueOf(properties.getProperty("hiResMap", String.valueOf(hiResMap)));
 		showHiddenOre = Boolean.valueOf(properties.getProperty("showHiddenOre", String.valueOf(showHiddenOre)));
+		mShowDeeds = Boolean.valueOf( properties.getProperty( "showDeeds", String.valueOf( mShowDeeds ) ) );
+		mMapName = properties.getProperty("defaultServer");
+		mJsonLibPath = properties.getProperty("libertyPath");
+		mJsonNovPath = properties.getProperty("novusPath");
 		
 		logger.log(Level.INFO, "hiResMap: " + hiResMap);
 		logger.log(Level.INFO, "showHiddenOre: " + showHiddenOre);
+		logger.log(Level.INFO, "Default Server: " + mMapName);
+		logger.log(Level.INFO, "Liberty Path: " + mJsonLibPath);
+		logger.log(Level.INFO, "Novus Path: " + mJsonNovPath);
 
 		RenderType.highRes = hiResMap;
 		MapRendererCave.showHiddenOre = showHiddenOre;
+		DeedData.mShowDeeds = mShowDeeds;
 	}
 
 	@Override
@@ -78,6 +95,8 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 				});
 
 		ModConsole.addConsoleListener(this);
+		setDefaultServer();
+		mDeedData.refreshMap( mCurrentJsonPath );
 	}
 	
 	private void initLiveMap(HeadsUpDisplay hud) {
@@ -123,8 +142,50 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 				((LiveMapWindow)liveMap).getHud().consoleOutput("Server size required");
 			}
 			return true;
+		} else if (string != null && string.startsWith("servermap")) 
+		{
+			if ( string.contains( "lib" ) )
+			{
+				mCurrentJsonPath = mJsonLibPath;
+			}
+			else if ( string.contains( "nov" ) )
+			{
+				mCurrentJsonPath = mJsonNovPath;
+			}
+			else
+			{
+				mCurrentJsonPath = "";
+			}
+			mDeedData.refreshMap( mCurrentJsonPath );
+			return true;
 		}
 		return false;
 	}
-
+	
+	private void setDefaultServer()
+	{
+		if ( mMapName.contains( "lib" ) )
+		{
+			mCurrentJsonPath = mJsonLibPath;
+			LiveMapWindow.mServerButtonText = "LIB";
+		}
+		else if ( mMapName.contains( "nov" ) )
+		{
+			mCurrentJsonPath = mJsonNovPath;
+			LiveMapWindow.mServerButtonText = "NOV";
+		}
+	}
+	
+	public String changeServer()
+	{
+		if ( mCurrentJsonPath.contains( mJsonLibPath ) )
+		{
+			mCurrentJsonPath = mJsonNovPath;
+		}
+		else if ( mCurrentJsonPath.contains( mJsonNovPath ) )
+		{
+			mCurrentJsonPath = mJsonLibPath;
+		}
+		return mCurrentJsonPath;
+	}
 }
