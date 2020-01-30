@@ -16,3 +16,12 @@ Requires [client modloader](https://github.com/ago1024/WurmClientModLauncher/rel
 * The buttons are ugly as hell
 * The 3D view may scroll out of range when walking up a high mountain
 * Your dot may end up behind a mountain in 3D view
+
+## Sklo Settings
+Set your prefered server in the property files (lib or nov)
+if you cross a server, you need new data. please open the console ingame (F1) and enter:
+servermap lib
+or
+servermap nov
+
+for your server
