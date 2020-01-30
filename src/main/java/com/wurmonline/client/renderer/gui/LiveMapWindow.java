@@ -22,10 +22,10 @@ public class LiveMapWindow extends WWindow {
 	private DeedData mDeedData = new DeedData();
 
 	public LiveMapWindow(World world, String pServer ) {
-		super("Live map", true);
-		setTitle("Live map");
+		super("Live map Sklo", true);
+		setTitle("Live map Sklo");
 		mServerShortcut = pServer;
-		mainPanel = new WurmBorderPanel("Live map");
+		mainPanel = new WurmBorderPanel("Live map Sklo");
 
 		this.liveMap = new LiveMap(world, 256);
 		resizable = false;
@@ -180,5 +180,10 @@ public class LiveMapWindow extends WWindow {
 			mDeedData.refreshMap();
 			mServerShortcut = "Lib";
 		}
+	}
+	
+	public void setServerShortcut( String pServer )
+	{
+		mServerShortcut = pServer;
 	}
 }

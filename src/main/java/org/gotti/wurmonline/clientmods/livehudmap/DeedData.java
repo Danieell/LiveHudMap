@@ -47,7 +47,7 @@ public class DeedData
 	            Long yEnd = (Long) lDeed.get( "y" ) + (Long) lDeed.get( "tilesSouth" );
 	            
 	            Long xPerimeterStart = xStart - (Long) lDeed.get( "tilesPerimeter" );
-	            Long xPerimeterEnd = xEnd + (Long) lDeed.get(" tilesPerimeter" );
+	            Long xPerimeterEnd = xEnd + (Long) lDeed.get( "tilesPerimeter" );
 	            Long yPerimeterStart = yStart - (Long) lDeed.get( "tilesPerimeter" );
 	            Long yPerimeterEnd = yEnd + (Long) lDeed.get( "tilesPerimeter" );
 	            

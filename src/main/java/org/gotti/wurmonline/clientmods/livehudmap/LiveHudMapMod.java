@@ -35,7 +35,7 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 	private boolean showHiddenOre = false;
 	private boolean mShowDeeds = true;
 	
-	public String mMapName = "";
+	public String mMapName = "Lib";
 	
 	private Object liveMap;
 	private LiveMapWindow mLiveMapWindow;
@@ -94,7 +94,6 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 				});
 
 		ModConsole.addConsoleListener(this);
-		setDefaultServer();
 	}
 	
 	private void initLiveMap(HeadsUpDisplay hud) {
@@ -108,6 +107,7 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 		
 					mLiveMapWindow = new LiveMapWindow( world, mMapName );
 					liveMap = mLiveMapWindow;
+					setDefaultServer();
 					mLiveMapWindow.getDeedData().setJsonServer( mCurrentJsonPath );
 					mLiveMapWindow.getDeedData().setShowDeeds( mShowDeeds );
 					mLiveMapWindow.getDeedData().setLibertyPath( mJsonLibPath );;
@@ -151,13 +151,16 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 	
 	private void setDefaultServer()
 	{
+		logger.log(Level.INFO, mMapName);
 		if ( mMapName.contains( "Lib" ) )
 		{
 			mCurrentJsonPath = mJsonLibPath;
+			mLiveMapWindow.setServerShortcut( mMapName );
 		}
 		else if ( mMapName.contains( "Nov" ) )
 		{
 			mCurrentJsonPath = mJsonNovPath;
+			mLiveMapWindow.setServerShortcut( mMapName );
 		}
 	}
 }
