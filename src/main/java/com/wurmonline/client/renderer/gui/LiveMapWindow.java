@@ -1,25 +1,14 @@
 package com.wurmonline.client.renderer.gui;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-
 import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 import org.gotti.wurmonline.clientmods.livehudmap.LiveMap;
 import org.gotti.wurmonline.clientmods.livehudmap.MapLayer;
 import org.gotti.wurmonline.clientmods.livehudmap.renderer.RenderType;
-import org.gotti.wurmunlimited.modloader.classhooks.HookManager;
 
 import com.wurmonline.client.game.World;
 import com.wurmonline.client.options.Options;
 import com.wurmonline.client.renderer.PickData;
-import com.wurmonline.client.resources.textures.ImageTexture;
-import com.wurmonline.client.resources.textures.ImageTextureLoader;
 import com.wurmonline.client.resources.textures.ResourceTexture;
 import com.wurmonline.client.resources.textures.ResourceTextureLoader;
 
@@ -27,19 +16,19 @@ public class LiveMapWindow extends WWindow {
 
 	private WurmBorderPanel mainPanel;
 	private LiveMap liveMap;
-	private BufferedImage iconImage;
 	private LiveMapView liveMapView;
-	public static String mServerButtonText;
+	private static String mServerShortcut = "";
+	
+	private DeedData mDeedData = new DeedData();
 
-	public LiveMapWindow(World world) {
+	public LiveMapWindow(World world, String pServer ) {
 		super("Live map", true);
 		setTitle("Live map");
+		mServerShortcut = pServer;
 		mainPanel = new WurmBorderPanel("Live map");
 
 		this.liveMap = new LiveMap(world, 256);
 		resizable = false;
-
-		iconImage = loadIconImage();
 
 		WurmArrayPanel<WButton> buttons = new WurmArrayPanel<WButton>("Live map buttons", WurmArrayPanel.DIR_VERTICAL);
 		buttons.setInitialSize(32, 256, false);
@@ -103,7 +92,7 @@ public class LiveMapWindow extends WWindow {
 			}
 		}));
 		
-		buttons.addComponent(createButton( "Deeds", "Toggle Deeds" , 5, new ButtonListener() 
+		buttons.addComponent(createButton( "Deed", "Toggle Deeds" , 5, new ButtonListener() 
 		{
 
 			@Override
@@ -114,33 +103,24 @@ public class LiveMapWindow extends WWindow {
 			@Override
 			public void buttonClicked( WButton p0 ) 
 			{
-				DeedData.mShowDeeds = !DeedData.mShowDeeds;
+				mDeedData.setShowDeeds( !mDeedData.getShowDeed() );
 			}
 		} ) );
 		
-//		buttons.addComponent(createButton( mServerButtonText, "Change Server (Lib/Nov)" , 6, new ButtonListener() 
-//		{
-//
-//			@Override
-//			public void buttonPressed( WButton p0 ) 
-//			{
-//			}
-//
-//			@Override
-//			public void buttonClicked( WButton p0 ) 
-//			{
-//				if ( mServerButtonText.contains( "LIB" ) )
-//				{
-//					mServerButtonText = "NOV";
-//					LiveHudMapMod.mCurrentJsonPath = LiveHudMapMod.mJsonNovPath;
-//				}
-//				else if ( mServerButtonText.contains( "NOV" ) )
-//				{
-//					mServerButtonText = "LIB";
-//					LiveHudMapMod.mCurrentJsonPath = LiveHudMapMod.mJsonLibPath;
-//				}
-//			}
-//		} ) );
+		buttons.addComponent(createButton( "SER", "Change Server (Lib/Nov)" , 6, new ButtonListener() 
+		{
+
+			@Override
+			public void buttonPressed( WButton p0 ) 
+			{
+			}
+
+			@Override
+			public void buttonClicked( WButton p0 ) 
+			{
+				changeServer();
+			}
+		} ) );
 
 
 
@@ -155,41 +135,11 @@ public class LiveMapWindow extends WWindow {
 		sizeFlags = FlexComponent.FIXED_WIDTH | FlexComponent.FIXED_HEIGHT;
 	}
 
-	private BufferedImage loadIconImage() {
-		try {
-			URL url = this.getClass().getClassLoader().getResource("livemapicons.png");
-			if (url == null && this.getClass().getClassLoader() == HookManager.getInstance().getLoader()) {
-				url = HookManager.getInstance().getClassPool().find(LiveMapWindow.class.getName());
-				if (url != null) {
-					String path = url.toString();
-					int pos = path.lastIndexOf('!');
-					if (pos != -1) {
-						path = path.substring(0, pos) + "!/livemapicons.png";
-					}
-					url = new URL(path);
-				}
-			}
-			if (url != null) {
-				return ImageIO.read(url);
-			} else {
-				return null;
-			}
-		} catch (IOException e) {
-			Logger.getLogger(LiveMapWindow.class.getName()).log(Level.WARNING, e.getMessage(), e);
-			return null;
-		}
-	}
-
-	private WButton createButton(String label, String tooltip, int textureIndex, ButtonListener listener) {
-		if (iconImage != null) {
-			BufferedImage image = iconImage.getSubimage(textureIndex * 32, 0, 32, 32);
-			ImageTexture texture = ImageTextureLoader.loadNowrapNearestTexture(image, false);
-			return new LiveMapButton("", tooltip, 32, 32, texture, listener);
-		} else {
-			final String themeName = Options.guiSkins.options[Options.guiSkins.value()].toLowerCase(Locale.ENGLISH).replace(" ", "");
-			final ResourceTexture backgroundTexture = ResourceTextureLoader.getTexture("img.gui.button.mainmenu." + themeName);
-			return new WTextureButton(label, tooltip, backgroundTexture, listener);
-		}
+	private WButton createButton(String label, String tooltip, int textureIndex, ButtonListener listener) 
+	{	
+		final String themeName = Options.guiSkins.options[Options.guiSkins.value()].toLowerCase(Locale.ENGLISH).replace(" ", "");
+		final ResourceTexture backgroundTexture = ResourceTextureLoader.getTexture("img.gui.button.mainmenu." + themeName);
+		return new WTextureButton(label, tooltip, backgroundTexture, listener);
 	}
 
 	public void closePressed()
@@ -209,5 +159,26 @@ public class LiveMapWindow extends WWindow {
 
 	public HeadsUpDisplay getHud() {
 		return hud;
+	}
+	
+	public DeedData getDeedData()
+	{
+		return mDeedData;
+	}
+	
+	public void changeServer()
+	{
+		if ( mServerShortcut.contains( "Lib" ) )
+		{
+			mDeedData.setJsonServer( mDeedData.getNovusPath() );
+			mDeedData.refreshMap();
+			mServerShortcut = "Nov";
+		}
+		else if ( mServerShortcut.contains( "Nov" ) )
+		{
+			mDeedData.setJsonServer( mDeedData.getLibertyPath() );
+			mDeedData.refreshMap();
+			mServerShortcut = "Lib";
+		}
 	}
 }

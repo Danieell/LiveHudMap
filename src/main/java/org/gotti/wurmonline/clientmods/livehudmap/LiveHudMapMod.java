@@ -38,8 +38,7 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 	public String mMapName = "";
 	
 	private Object liveMap;
-	
-	private DeedData mDeedData = new DeedData();
+	private LiveMapWindow mLiveMapWindow;
 
 	public static int serverSize = 0;
 	
@@ -58,13 +57,14 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 		
 		logger.log(Level.INFO, "hiResMap: " + hiResMap);
 		logger.log(Level.INFO, "showHiddenOre: " + showHiddenOre);
-		logger.log(Level.INFO, "Default Server: " + mMapName);
-		logger.log(Level.INFO, "Liberty Path: " + mJsonLibPath);
-		logger.log(Level.INFO, "Novus Path: " + mJsonNovPath);
+		logger.log( Level.INFO, "Default Server: " + mMapName );
+		logger.log( Level.INFO, "Liberty Path: " + mJsonLibPath );
+		logger.log( Level.INFO, "Novus Path: " + mJsonNovPath );
 
 		RenderType.highRes = hiResMap;
 		MapRendererCave.showHiddenOre = showHiddenOre;
-		DeedData.mShowDeeds = mShowDeeds;
+		
+		
 	}
 
 	@Override
@@ -73,7 +73,6 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 
 	@Override
 	public void init() {
-
 		// com.wurmonline.client.renderer.gui.HeadsUpDisplay.init(int, int)
 		HookManager.getInstance().registerHook("com.wurmonline.client.renderer.gui.HeadsUpDisplay", "init", "(II)V",
 				new InvocationHandlerFactory() {
@@ -96,7 +95,6 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 
 		ModConsole.addConsoleListener(this);
 		setDefaultServer();
-		mDeedData.refreshMap( mCurrentJsonPath );
 	}
 	
 	private void initLiveMap(HeadsUpDisplay hud) {
@@ -108,17 +106,22 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 				try {
 					World world = ReflectionUtil.getPrivateField(hud, ReflectionUtil.getField(hud.getClass(), "world"));
 		
-					LiveMapWindow liveMapWindow = new LiveMapWindow(world);
-					liveMap = liveMapWindow;
+					mLiveMapWindow = new LiveMapWindow( world, mMapName );
+					liveMap = mLiveMapWindow;
+					mLiveMapWindow.getDeedData().setJsonServer( mCurrentJsonPath );
+					mLiveMapWindow.getDeedData().setShowDeeds( mShowDeeds );
+					mLiveMapWindow.getDeedData().setLibertyPath( mJsonLibPath );;
+					mLiveMapWindow.getDeedData().setNovusPath( mJsonNovPath );
+					mLiveMapWindow.getDeedData().refreshMap();
 		
 					MainMenu mainMenu = ReflectionUtil.getPrivateField(hud, ReflectionUtil.getField(hud.getClass(), "mainMenu"));
-					mainMenu.registerComponent("Live map", liveMapWindow);
+					mainMenu.registerComponent("Live map", mLiveMapWindow);
 		
 					List<WurmComponent> components = ReflectionUtil.getPrivateField(hud, ReflectionUtil.getField(hud.getClass(), "components"));
-					components.add(liveMapWindow);
+					components.add(mLiveMapWindow);
 					
 					SavePosManager savePosManager = ReflectionUtil.getPrivateField(hud, ReflectionUtil.getField(hud.getClass(), "savePosManager"));
-					savePosManager.registerAndRefresh(liveMapWindow, "livemapwindow");
+					savePosManager.registerAndRefresh(mLiveMapWindow, "livemapwindow");
 				}
 				catch (IllegalArgumentException | IllegalAccessException | ClassCastException | NoSuchFieldException e) {
 					throw new RuntimeException(e);
@@ -142,50 +145,19 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 				((LiveMapWindow)liveMap).getHud().consoleOutput("Server size required");
 			}
 			return true;
-		} else if (string != null && string.startsWith("servermap")) 
-		{
-			if ( string.contains( "lib" ) )
-			{
-				mCurrentJsonPath = mJsonLibPath;
-			}
-			else if ( string.contains( "nov" ) )
-			{
-				mCurrentJsonPath = mJsonNovPath;
-			}
-			else
-			{
-				mCurrentJsonPath = "";
-			}
-			mDeedData.refreshMap( mCurrentJsonPath );
-			return true;
-		}
+		} 
 		return false;
 	}
 	
 	private void setDefaultServer()
 	{
-		if ( mMapName.contains( "lib" ) )
-		{
-			mCurrentJsonPath = mJsonLibPath;
-			LiveMapWindow.mServerButtonText = "LIB";
-		}
-		else if ( mMapName.contains( "nov" ) )
-		{
-			mCurrentJsonPath = mJsonNovPath;
-			LiveMapWindow.mServerButtonText = "NOV";
-		}
-	}
-	
-	public String changeServer()
-	{
-		if ( mCurrentJsonPath.contains( mJsonLibPath ) )
-		{
-			mCurrentJsonPath = mJsonNovPath;
-		}
-		else if ( mCurrentJsonPath.contains( mJsonNovPath ) )
+		if ( mMapName.contains( "Lib" ) )
 		{
 			mCurrentJsonPath = mJsonLibPath;
 		}
-		return mCurrentJsonPath;
+		else if ( mMapName.contains( "Nov" ) )
+		{
+			mCurrentJsonPath = mJsonNovPath;
+		}
 	}
 }

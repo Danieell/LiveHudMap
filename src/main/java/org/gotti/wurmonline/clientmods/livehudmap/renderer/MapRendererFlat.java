@@ -2,6 +2,7 @@ package org.gotti.wurmonline.clientmods.livehudmap.renderer;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
 import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 
@@ -9,6 +10,8 @@ import com.wurmonline.client.game.NearTerrainDataBuffer;
 import com.wurmonline.mesh.Tiles.Tile;
 
 public class MapRendererFlat extends AbstractSurfaceRenderer {
+	final Logger logger = Logger.getLogger( MapRendererFlat.class.getName() );
+	
 	public MapRendererFlat(NearTerrainDataBuffer buffer) {
 		super(buffer);
 	}
@@ -26,7 +29,6 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 		for (int x = 0; x < lWidth; x++) {
 			for (int y = lWidth - 1; y >= 0; y--) {
 				final short height = getSurfaceHeight(x + xo, y + yo);
-				final int[][] lDeedData = DeedData.mMap;
 				
 				final int tx = x + xo;
 				final int ty = y + yo;
@@ -43,10 +45,10 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 				int r = color.getRed();
 				int g = color.getGreen();
 				int b = color.getBlue();
-				
+
 				if ( DeedData.mShowDeeds )
 				{
-					if ( lDeedData[tx][ty] == 1)
+					if ( DeedData.mMap[tx][ty] == (byte)1 )
 					{
 						if ( g <= 216 )
 						{
@@ -57,7 +59,7 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 							g = 256;
 						}
 					}
-					else if ( lDeedData[tx][ty] == 2 )
+					else if ( DeedData.mMap[tx][ty] == (byte)2 )
 					{
 						if ( r <= 216 )
 						{
