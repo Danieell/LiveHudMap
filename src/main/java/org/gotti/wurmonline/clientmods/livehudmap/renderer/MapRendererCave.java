@@ -7,6 +7,8 @@ import java.util.Random;
 import com.wurmonline.client.game.CaveDataBuffer;
 import com.wurmonline.client.renderer.PickData;
 import com.wurmonline.mesh.Tiles.Tile;
+
+import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 import org.gotti.wurmonline.clientmods.livehudmap.LiveHudMapMod;
 
 public class MapRendererCave extends AbstractCaveRenderer {
@@ -31,6 +33,8 @@ public class MapRendererCave extends AbstractCaveRenderer {
 			for (int y = lWidth - 1; y >= 0; y--) {
 
 				final short height = getHeight(x + xo, y + yo);
+				final int tx = x + xo;
+				final int ty = y + yo;
 				Tile tile = getEffectiveTileType(x + xo, y + yo);
 
 				final Color color;
@@ -43,10 +47,49 @@ public class MapRendererCave extends AbstractCaveRenderer {
 				int r = color.getRed();
 				int g = color.getGreen();
 				int b = color.getBlue();
-				if (height < 0 && tile == Tile.TILE_CAVE) {
+				
+				
+				if ( ( height < 0 && tile == Tile.TILE_CAVE ) || (  height < 0 && tile == Tile.TILE_CAVE_FLOOR_REINFORCED ) ) {
 					r = (int) (r * 0.2f + 0.4f * 0.4f * 256f);
 					g = (int) (g * 0.2f + 0.5f * 0.4f * 256f);
 					b = (int) (b * 0.2f + 1.0f * 0.4f * 256f);
+				}
+				
+				if ( DeedData.mShowDeeds )
+				{
+					if ( DeedData.mMap[tx][ty] == (byte)1 )
+					{
+						if ( g <= 215 )
+						{
+							g = g + 40;
+						}
+						else
+						{
+							g = 255;
+						}
+					}
+					else if ( DeedData.mMap[tx][ty] == (byte)2 )
+					{
+						if ( r <= 215 )
+						{
+							r = r + 40;
+						}
+						else
+						{
+							r = 255;
+						}
+						if ( r == 255 )
+						{
+							if ( b <= 225 )
+							{
+								b = b + 30;
+							}
+							else
+							{
+								b = 255;
+							}
+						}
+					}
 				}
 				
 				if (px == x + xo && py == y + yo) {
