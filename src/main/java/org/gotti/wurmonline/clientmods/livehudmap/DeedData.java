@@ -54,17 +54,23 @@ public class DeedData
 	            
 	            for ( int i = xPerimeterStart.intValue(); i <= xPerimeterEnd; i ++)
 	            {
-	            	for ( int j = yPerimeterStart.intValue(); j <= yPerimeterEnd; j ++)
-		            {
-	            		if ( ( i > xStart ) && ( i <= xEnd ) && ( j > yStart  ) && ( j <= yEnd ) )
-	            		{
-	            			mMap[i][j] = 1;	            			
-	            		}
-	            		else
-	            		{
-	            			mMap[i][j] = 2;	
-	            		}
-		            }
+	            	if ( ( i >= 0 ) && ( i <= 4096 ) )
+	            	{
+		            	for ( int j = yPerimeterStart.intValue(); j <= yPerimeterEnd; j ++)
+			            {
+		            		if ( ( j >= 0 ) && ( j <= 4096 ) )
+		            		{
+		            			if ( ( i > xStart ) && ( i <= xEnd ) && ( j > yStart  ) && ( j <= yEnd ) )
+		            			{
+		            				mMap[i][j] = 1;	            			
+		            			}
+		            			else
+		            			{
+		            				mMap[i][j] = 2;	
+		            			}		            			
+		            		}
+			            }
+	            	}
 	            }
 	        }
         } 
