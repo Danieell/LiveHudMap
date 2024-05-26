@@ -44,6 +44,7 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 	
 	public static String mJsonLibPath = "";
 	public static String mJsonNovPath = "";
+	public static String mJsonInfPath = "";
 	public static String mCurrentJsonPath = "";
 
 	@Override
@@ -54,12 +55,14 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 		mMapName = properties.getProperty("defaultServer");
 		mJsonLibPath = properties.getProperty("libertyPath");
 		mJsonNovPath = properties.getProperty("novusPath");
+		mJsonInfPath = properties.getProperty("infinityPath");
 		
 		logger.log(Level.INFO, "hiResMap: " + hiResMap);
 		logger.log(Level.INFO, "showHiddenOre: " + showHiddenOre);
 		logger.log( Level.INFO, "Default Server: " + mMapName );
 		logger.log( Level.INFO, "Liberty Path: " + mJsonLibPath );
 		logger.log( Level.INFO, "Novus Path: " + mJsonNovPath );
+		logger.log( Level.INFO, "Infinity Path: " + mJsonInfPath );
 
 		RenderType.highRes = hiResMap;
 		MapRendererCave.showHiddenOre = showHiddenOre;
@@ -112,6 +115,7 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 					mLiveMapWindow.getDeedData().setShowDeeds( mShowDeeds );
 					mLiveMapWindow.getDeedData().setLibertyPath( mJsonLibPath );;
 					mLiveMapWindow.getDeedData().setNovusPath( mJsonNovPath );
+					mLiveMapWindow.getDeedData().setInfinityPath( mJsonInfPath );
 					mLiveMapWindow.getDeedData().refreshMap();
 		
 					MainMenu mainMenu = ReflectionUtil.getPrivateField(hud, ReflectionUtil.getField(hud.getClass(), "mainMenu"));
@@ -160,6 +164,11 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 		else if ( mMapName.contains( "Nov" ) )
 		{
 			mCurrentJsonPath = mJsonNovPath;
+			mLiveMapWindow.setServerShortcut( mMapName );
+		}
+		else if ( mMapName.contains( "Inf" ) )
+		{
+			mCurrentJsonPath = mJsonInfPath;
 			mLiveMapWindow.setServerShortcut( mMapName );
 		}
 	}

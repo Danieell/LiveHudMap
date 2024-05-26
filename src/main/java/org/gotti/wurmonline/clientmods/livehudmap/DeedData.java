@@ -17,6 +17,7 @@ import com.google.common.collect.Iterables;
 public class DeedData 
 {	private static String mJsonLibPath = "";
 	private static String mJsonNovPath = "";
+	private static String mJsonInfPath = "";
 	private static String mJsonPath = "";
 	public static byte[][] mMap = new byte[4097][4097];
 	public static boolean mShowDeeds;
@@ -127,6 +128,16 @@ public class DeedData
 	public String getNovusPath()
 	{
 		return mJsonNovPath;
+	}
+
+	public void setInfinityPath( String pPath )
+	{
+		mJsonInfPath = pPath;
+	}
+
+	public String getInfinityPath()
+	{
+		return mJsonInfPath;
 	}
 	
 	public void setJsonServer( String pServer )

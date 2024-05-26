@@ -174,9 +174,8 @@ public class LiveMapWindow extends WWindow {
 			mDeedData.refreshMap();
 			mServerShortcut = "Nov";
 		}
-		else if ( mServerShortcut.contains( "Nov" ) )
-		{
-			mDeedData.setJsonServer( mDeedData.getLibertyPath() );
+		else if ( mServerShortcut.contains( "Nov" ) ) {
+			mDeedData.setJsonServer(mDeedData.getLibertyPath());
 			mDeedData.refreshMap();
 			mServerShortcut = "Lib";
 		}
