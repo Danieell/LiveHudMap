@@ -107,7 +107,7 @@ public class LiveMapWindow extends WWindow {
 			}
 		} ) );
 		
-		buttons.addComponent(createButton( "SER", "Change Server (Lib/Nov)" , 6, new ButtonListener() 
+		buttons.addComponent(createButton( "SER", "Change Server (Lib/Nov/Inf)" , 6, new ButtonListener()
 		{
 
 			@Override
@@ -175,6 +175,11 @@ public class LiveMapWindow extends WWindow {
 			mServerShortcut = "Nov";
 		}
 		else if ( mServerShortcut.contains( "Nov" ) ) {
+			mDeedData.setJsonServer(mDeedData.getInfinityPath());
+			mDeedData.refreshMap();
+			mServerShortcut = "Inf";
+		}
+		else if ( mServerShortcut.contains( "Inf" ) ) {
 			mDeedData.setJsonServer(mDeedData.getLibertyPath());
 			mDeedData.refreshMap();
 			mServerShortcut = "Lib";

@@ -20,8 +20,8 @@ Requires [client modloader](https://github.com/ago1024/WurmClientModLauncher/rel
 ## Sklo Settings
 Set your prefered server in the property files (lib or nov)
 if you cross a server, you need new data. please open the console ingame (F1) and enter:
-servermap lib
-or
+servermap lib,
 servermap nov
-
+or
+servermap inf
 for your server
