@@ -24,7 +24,7 @@ public class LiveMap implements TerrainChangeListener, CaveBufferChangeListener 
 	private int size;
 	private final World world;
 	
-	private MapLayerView surface;
+	private static MapLayerView surface;
 	private MapLayerView cave;
 
 	private boolean dirty = true;
@@ -79,7 +79,7 @@ public class LiveMap implements TerrainChangeListener, CaveBufferChangeListener 
 			dirty = false;
 		}
 	}
-	
+
 	private MapLayerView getLayer() {
 		if (isSurface()) {
 			return surface;
@@ -113,6 +113,10 @@ public class LiveMap implements TerrainChangeListener, CaveBufferChangeListener 
 		dirty = true;
 	}
 
+	public void deedChanged() {
+		dirty = true;
+	}
+
 	private boolean isSurface() {
 		return world.getPlayerLayer() >= 0;
 	}
@@ -142,3 +146,4 @@ public class LiveMap implements TerrainChangeListener, CaveBufferChangeListener 
 		this.getLayer().pick(pickData, xMouse, yMouse);
 	}
 }
+

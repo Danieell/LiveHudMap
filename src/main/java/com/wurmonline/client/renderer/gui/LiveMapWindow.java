@@ -1,6 +1,8 @@
 package com.wurmonline.client.renderer.gui;
 
 import java.util.Locale;
+import java.util.logging.Level;
+
 import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 import org.gotti.wurmonline.clientmods.livehudmap.LiveMap;
 import org.gotti.wurmonline.clientmods.livehudmap.MapLayer;
@@ -18,6 +20,7 @@ public class LiveMapWindow extends WWindow {
 	private LiveMap liveMap;
 	private LiveMapView liveMapView;
 	private static String mServerShortcut = "";
+	private Server server;
 	
 	private DeedData mDeedData = new DeedData();
 
@@ -30,7 +33,7 @@ public class LiveMapWindow extends WWindow {
 		this.liveMap = new LiveMap(world, 256);
 		resizable = false;
 
-		WurmArrayPanel<WButton> buttons = new WurmArrayPanel<WButton>("Live map buttons", WurmArrayPanel.DIR_VERTICAL);
+		WurmArrayPanel<WButton>  buttons = new WurmArrayPanel<WButton>("Live map buttons", WurmArrayPanel.DIR_VERTICAL);
 		buttons.setInitialSize(32, 256, false);
 		buttons.addComponent(createButton("+", "Zoom in" , 0, new ButtonListener() {
 
@@ -107,7 +110,7 @@ public class LiveMapWindow extends WWindow {
 			}
 		} ) );
 		
-		buttons.addComponent(createButton( "SER", "Change Server (Lib/Nov/Inf)" , 6, new ButtonListener()
+		buttons.addComponent(createButton( "Lib", "Change Server To Lib" , 6, new ButtonListener()
 		{
 
 			@Override
@@ -118,6 +121,39 @@ public class LiveMapWindow extends WWindow {
 			@Override
 			public void buttonClicked( WButton p0 ) 
 			{
+				server = Server.Liberty;
+				changeServer();
+			}
+		} ) );
+
+		buttons.addComponent(createButton( "Nov", "Change Server To Nov" , 7, new ButtonListener()
+		{
+
+			@Override
+			public void buttonPressed( WButton p0 )
+			{
+			}
+
+			@Override
+			public void buttonClicked( WButton p0 )
+			{
+				server = Server.Novus;
+				changeServer();
+			}
+		} ) );
+
+		buttons.addComponent(createButton( "Inf", "Change Server To Inf" , 8, new ButtonListener()
+		{
+
+			@Override
+			public void buttonPressed( WButton p0 )
+			{
+			}
+
+			@Override
+			public void buttonClicked( WButton p0 )
+			{
+				server = Server.Infinity;
 				changeServer();
 			}
 		} ) );
@@ -165,29 +201,24 @@ public class LiveMapWindow extends WWindow {
 	{
 		return mDeedData;
 	}
-	
-	public void changeServer()
-	{
-		if ( mServerShortcut.contains( "Lib" ) )
-		{
-			mDeedData.setJsonServer( mDeedData.getNovusPath() );
-			mDeedData.refreshMap();
-			mServerShortcut = "Nov";
-		}
-		else if ( mServerShortcut.contains( "Nov" ) ) {
-			mDeedData.setJsonServer(mDeedData.getInfinityPath());
-			mDeedData.refreshMap();
-			mServerShortcut = "Inf";
-		}
-		else if ( mServerShortcut.contains( "Inf" ) ) {
+
+	public void changeServer() {
+		if(server == Server.Liberty) {
 			mDeedData.setJsonServer(mDeedData.getLibertyPath());
-			mDeedData.refreshMap();
-			mServerShortcut = "Lib";
 		}
+		else if (server == Server.Novus) {
+			mDeedData.setJsonServer( mDeedData.getNovusPath());
+		}
+		else if (server == Server.Infinity) {
+			mDeedData.setJsonServer(mDeedData.getInfinityPath());
+		}
+		mDeedData.refreshMap();
+		liveMap.deedChanged();
+		liveMap.update(x, y);
 	}
-	
-	public void setServerShortcut( String pServer )
+
+	public void setServerShortcut( Server defaultServer )
 	{
-		mServerShortcut = pServer;
+		server = defaultServer;
 	}
 }

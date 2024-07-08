@@ -22,7 +22,7 @@ public class DeedData
 	public static byte[][] mMap = new byte[4097][4097];
 	public static boolean mShowDeeds;
 	
-	final static Logger logger = Logger.getLogger(DeedData.class.getName());
+	public final static Logger logger = Logger.getLogger(DeedData.class.getName());
 	
 	private static void parseMapData() 
     {

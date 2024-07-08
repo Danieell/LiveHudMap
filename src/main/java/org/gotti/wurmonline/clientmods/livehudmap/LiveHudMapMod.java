@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.wurmonline.client.renderer.gui.*;
 import org.gotti.wurmonline.clientmods.livehudmap.renderer.MapRendererCave;
 import org.gotti.wurmonline.clientmods.livehudmap.renderer.RenderType;
 import org.gotti.wurmunlimited.modloader.ReflectionUtil;
@@ -21,10 +22,6 @@ import org.gotti.wurmunlimited.modsupport.console.ConsoleListener;
 import org.gotti.wurmunlimited.modsupport.console.ModConsole;
 
 import com.wurmonline.client.game.World;
-import com.wurmonline.client.renderer.gui.HeadsUpDisplay;
-import com.wurmonline.client.renderer.gui.LiveMapWindow;
-import com.wurmonline.client.renderer.gui.MainMenu;
-import com.wurmonline.client.renderer.gui.WurmComponent;
 import com.wurmonline.client.settings.SavePosManager;
 
 public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Configurable, ConsoleListener {
@@ -159,17 +156,17 @@ public class LiveHudMapMod implements WurmClientMod, Initable, PreInitable, Conf
 		if ( mMapName.contains( "Lib" ) )
 		{
 			mCurrentJsonPath = mJsonLibPath;
-			mLiveMapWindow.setServerShortcut( mMapName );
+			mLiveMapWindow.setServerShortcut(Server.Liberty );
 		}
 		else if ( mMapName.contains( "Nov" ) )
 		{
 			mCurrentJsonPath = mJsonNovPath;
-			mLiveMapWindow.setServerShortcut( mMapName );
+			mLiveMapWindow.setServerShortcut( Server.Novus );
 		}
 		else if ( mMapName.contains( "Inf" ) )
 		{
 			mCurrentJsonPath = mJsonInfPath;
-			mLiveMapWindow.setServerShortcut( mMapName );
+			mLiveMapWindow.setServerShortcut( Server.Infinity );
 		}
 	}
 }
