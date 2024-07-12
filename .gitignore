@@ -8,3 +8,5 @@ pom.xml.versionsBackup
 /bin/
 ./idea/
 .attach*
+client.jar
+lib/*
